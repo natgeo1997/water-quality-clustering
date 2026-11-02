@@ -27,7 +27,7 @@ The presentation reports:
 | Clustering | K-Means, with three clusters selected using the elbow method |
 | Visualization | PCA projection, distributions, boxplots and cluster summaries |
 
-These details summarize the submitted study; the analysis has not been rerun from this repository.
+These details summarize the submitted study. A separate companion run is now available below; it does not claim exact historical replication.
 
 ## Workflow and technical decisions
 
@@ -44,21 +44,42 @@ Scaling makes measurements with different units comparable for distance-based cl
 
 **Tools described in the study:** Python, pandas, NumPy, scikit-learn, Matplotlib and Seaborn.
 
-## Repository contents and reproducibility
+## Reproduce the workflow
 
-```text
-README.md
-presentation/
-  4.0.pdf       Original academic presentation
-  README.md    Guide to the presentation
-docs/images/pca.jpg  Original PCA chart extracted from the PDF
+The original Colab notebook has been recovered from the link in the presentation. Its code uses **median imputation** and excludes `Potability` from the model inputs. Read the [notebook provenance notes](notebooks/README.md).
+
+- [Recovered original source](notebooks/original_source.ipynb): code preserved, outputs and execution metadata cleared; retains the historical Colab path and chart labels.
+- [Runnable companion notebook](notebooks/reproduce.ipynb): local paths, explicit parameters and neutral cluster labels; also available as `analysis.py`.
+- [Recorded companion run](reports/2026-11-02/README.md): input checksum, package versions, cluster summaries and measured limitations.
+
+Requirements: Python 3.11 is used in CI. Download `water_potability.csv` from the [source dataset](https://www.kaggle.com/datasets/adityakadiwal/water-potability) into `data/`; see [data provenance](data/README.md). The raw dataset is not redistributed here.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-reproduce.txt
+python analysis.py --csv data/water_potability.csv --output-dir outputs/companion
 ```
 
-The repository currently contains the presentation, not an executable notebook, dataset or dependency specification. Viewing the PDF requires no Python installation. The PDF references a Colab notebook, but its availability and reproducibility are not verified here.
+The command creates metrics, cluster assignments and means, an elbow curve and PCA plot. To use the notebook, install `requirements-dev.txt` and open `notebooks/reproduce.ipynb` with the same Python environment. Reusing an output directory replaces its generated report files.
 
-## Limitations and next steps
+## Verified companion results
 
-- The presentation describes median imputation in one section and dropping missing rows in another. The exact final preprocessing cannot be established without the source notebook.
-- Cluster interpretations and reported proportions have not been independently reproduced. No silhouette score, stability analysis or validated predictive performance is claimed here.
-- The dataset observations should not be treated as verified geographic regions. The original presentation's region/risk terminology is part of its academic framing.
-- Reproducible next steps are to publish the source notebook, document dataset provenance and preprocessing, set random seeds and evaluate cluster stability.
+The recorded run used all **3,276 observations**. The sampled silhouette score was **0.0766** (1,000 observations), suggesting weak separation for this configuration. The first two PCA components explained about **25.97%** of variance. These findings are documented rather than presented as strong clustering performance.
+
+## Checks
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pytest -q
+```
+
+[CI](https://github.com/natgeo1997/water-quality-clustering/actions) uses synthetic test inputs to check median imputation, target exclusion, invalid inputs and repeatable outputs. The original notebook is an archive; CI tests the supported companion pipeline. The companion notebook was executed locally end to end on the source CSV.
+
+## Limitations
+
+- The PDF describes median imputation in one section and dropping rows in another. The recovered source confirms median imputation; the PDF is preserved as the original academic artifact.
+- Exact historical results are not claimed: the old library environment and implicit K-Means initialization count are unknown. The companion explicitly uses n_init=10 and seed 42.
+- The source notebook labels clusters as low/medium/high risk by index. Cluster IDs are arbitrary; those assignments are not validated safety or potability classes.
+- Dataset rows are observations, not verified geographic regions. No operational or public-health decision system is demonstrated.
+- Additional work could compare cluster stability, alternative k values and modeling choices. A low silhouette score is a reason to investigate, not to rename groups as meaningful risk levels.

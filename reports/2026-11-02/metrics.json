@@ -1,0 +1,49 @@
+{
+  "observations": 3276,
+  "input_columns": 10,
+  "features": [
+    "ph",
+    "Hardness",
+    "Solids",
+    "Chloramines",
+    "Sulfate",
+    "Conductivity",
+    "Organic_carbon",
+    "Trihalomethanes",
+    "Turbidity"
+  ],
+  "missing_before_imputation": {
+    "ph": 491,
+    "Hardness": 0,
+    "Solids": 0,
+    "Chloramines": 0,
+    "Sulfate": 781,
+    "Conductivity": 0,
+    "Organic_carbon": 0,
+    "Trihalomethanes": 162,
+    "Turbidity": 0
+  },
+  "imputation": "column median",
+  "scaling": "StandardScaler",
+  "random_state": 42,
+  "n_init": 10,
+  "cluster_counts": {
+    "0": 1139,
+    "1": 938,
+    "2": 1199
+  },
+  "silhouette_score_sample": 0.07658018198265068,
+  "silhouette_sample_size": 1000,
+  "pca_explained_variance_ratio": [
+    0.13337386936653897,
+    0.1263261200491703
+  ],
+  "source_csv_sha256": "904004bde729bfe3d2e195f46343bceead09e32a0eb95bb8184e7e20e029b2bf",
+  "versions": {
+    "numpy": "2.4.6",
+    "pandas": "3.1.0",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2"
+  },
+  "scope": "Companion rerun; cluster IDs are arbitrary, not water safety or geographic risk labels."
+}
